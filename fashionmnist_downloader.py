@@ -1,3 +1,4 @@
+# File: fashion_mnist_downloader.py
 import os
 import gzip
 import numpy as np
@@ -39,23 +40,3 @@ def download_fashion_mnist(data_dir='./data'):
                 data[key] = np.frombuffer(f.read(), np.uint8, offset=8)
 
     return data["train_images"], data["train_labels"], data["test_images"], data["test_labels"]
-
-if __name__ == "__main__":
-    # Define parameters
-    data_directory = './fashion_mnist_data'
-
-    # Download dataset
-    train_images, train_labels, test_images, test_labels = download_fashion_mnist(data_dir=data_directory)
-
-    # Print dataset information
-    print(f"Training data shape: {train_images.shape}")
-    print(f"Training labels shape: {train_labels.shape}")
-    print(f"Testing data shape: {test_images.shape}")
-    print(f"Testing labels shape: {test_labels.shape}")
-
-    # Example: Display the first image and label
-    import matplotlib.pyplot as plt
-
-    plt.imshow(train_images[0], cmap='gray')
-    plt.title(f"Label: {train_labels[0]}")
-    plt.show()

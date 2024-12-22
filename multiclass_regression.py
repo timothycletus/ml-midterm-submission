@@ -8,9 +8,9 @@ def sigmoid(z):
 def compute_loss(y_true, y_pred):
     return -np.mean(y_true * np.log(y_pred + 1e-7) + (1 - y_true) * np.log(1 - y_pred + 1e-7))
 
-def train_logistic_regression(X, y, num_classes, learning_rate=0.1, epochs=100):
+def train_logistic_regression(X, y, num_classes, learning_rate=0.1, epochs=100, l2_penalty=0.01):
     """
-    Trains logistic regression models for multi-class classification using one-vs-all approach.
+    Train logistic regression with L2 regularization for multi-class classification.
 
     Args:
         X (numpy.ndarray): Training data.
@@ -18,19 +18,25 @@ def train_logistic_regression(X, y, num_classes, learning_rate=0.1, epochs=100):
         num_classes (int): Number of classes.
         learning_rate (float): Learning rate.
         epochs (int): Number of training epochs.
+        l2_penalty (float): L2 regularization strength.
 
     Returns:
-        numpy.ndarray: Weights for each class.
+        numpy.ndarray: Trained weights for each class.
     """
-    m, n = X.shape
-    weights = np.zeros((num_classes, n))
+    m, n = X.shape  # Number of samples (m) and features (n)
+    weights = np.zeros((num_classes, n))  # Initialize weights for each class
 
     for class_label in range(num_classes):
+        # Binary labels for the current class (One-vs-All)
         y_binary = (y == class_label).astype(int)
+        
         for epoch in range(epochs):
+            # Compute predictions using the sigmoid function
             predictions = sigmoid(np.dot(X, weights[class_label].T))
+            
+            # Compute the gradient with L2 penalty
             gradient = np.dot((predictions - y_binary).T, X) / m
-            weights[class_label] -= learning_rate * gradient
+            weights[class_label] -= learning_rate * (gradient + l2_penalty * weights[class_label])
 
     return weights
 
